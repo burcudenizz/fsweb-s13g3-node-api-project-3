@@ -9,15 +9,15 @@ function logger(req, res, next) {
 async function validateUserId(req, res, next) {
   // SİHRİNİZİ GÖRELİM
   try {
-    let existUser = await UserModel.getById(req.params.id);
-    if (!existUser) {
-      res.status(404).json({ mesaj: "kullanıcı bulunamadı" });
+    let user = await UserModel.getById(req.params.id);
+    if (!user) {
+      res.status(404).json({ mesaj: "user not found" });
     } else {
-      req.user = existUser;
+      req.currentUser = user;
       next();
     }
-  } catch (err) {
-    res.status(500).json({ message: "Hata!!" });
+  } catch (error) {
+    next(error);
   }
 }
 
@@ -38,7 +38,6 @@ function validatePost(req, res, next) {
   if (!text) {
     res.status(400).json({ mesaj: "gerekli text alanı eksik" });
   } else {
-    req.text = text;
     next();
   }
 }
